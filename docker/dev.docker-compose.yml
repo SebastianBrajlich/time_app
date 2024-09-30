@@ -18,9 +18,9 @@ services:
       - type: bind
         source: ../mix.exs
         target: /app/mix.exs
-      # - type: bind
-      #   source: ../mix.lock
-      #   target: /app/mix.lock
+      - type: bind
+        source: ../mix.lock
+        target: /app/mix.lock
       - type: volume
         source: deps
         target: /app/deps

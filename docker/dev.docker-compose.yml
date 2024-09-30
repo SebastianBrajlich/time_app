@@ -5,4 +5,29 @@ services:
       context: ../
       dockerfile: docker/dev.Dockerfile
     image: timeapp-dev
+    volumes:
+      - type: bind
+        source: ../lib
+        target: /app/lib
+      # - type: bind
+      #   source: ../config
+      #   target: /app/config
+      - type: bind
+        source: ../test
+        target: /app/test
+      - type: bind
+        source: ../mix.exs
+        target: /app/mix.exs
+      # - type: bind
+      #   source: ../mix.lock
+      #   target: /app/mix.lock
+      - type: volume
+        source: deps
+        target: /app/deps
+      - type: volume
+        source: build
+        target: /app/_build
+volumes:
+  deps:
+  build:        
     

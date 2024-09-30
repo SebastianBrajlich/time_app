@@ -29,6 +29,6 @@ RUN mkdir -p $APP_HOME
 WORKDIR $APP_HOME
 COPY docker/dev.entrypoint.sh $APP_HOME/entrypoint.sh
 COPY docker/dev.remote.sh $APP_HOME/remote.sh
-COPY mix.exs mix.lock .formatter.exs .credo.exs $APP_HOME/
+COPY mix.exs .formatter.exs $APP_HOME/
 
 CMD ["/app/entrypoint.sh"]

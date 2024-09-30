@@ -9,9 +9,9 @@ services:
       - type: bind
         source: ../lib
         target: /app/lib
-      # - type: bind
-      #   source: ../config
-      #   target: /app/config
+      - type: bind
+        source: ../config
+        target: /app/config
       - type: bind
         source: ../test
         target: /app/test

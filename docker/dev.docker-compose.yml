@@ -1,0 +1,8 @@
+name: apptime
+services:
+  web:
+    build:
+      context: ../
+      dockerfile: docker/dev.Dockerfile
+    image: apptime-dev
+    

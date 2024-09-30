@@ -1,8 +1,8 @@
-name: apptime
+name: timeapp
 services:
   web:
     build:
       context: ../
       dockerfile: docker/dev.Dockerfile
-    image: apptime-dev
+    image: timeapp-dev
     

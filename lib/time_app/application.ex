@@ -7,6 +7,13 @@ defmodule TimeApp.Application do
 
   @impl true
   def start(_type, _args) do
+    case Application.fetch_env(:time_app, :url1) do
+      {:ok, url} -> IO.puts("URL: #{url}")
+      :error -> IO.puts("Error: URL doesn't exist")
+    end
+
+
+
     children = [
       # Starts a worker by calling: TimeApp.Worker.start_link(arg)
       # {TimeApp.Worker, arg}

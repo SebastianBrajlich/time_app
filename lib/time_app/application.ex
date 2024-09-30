@@ -1,27 +1,23 @@
 defmodule TimeApp.Application do
-  # See https://hexdocs.pm/elixir/Application.html
-  # for more information on OTP Applications
-  @moduledoc false
-
   use Application
+  alias TimeApp.ConfigReader, as: ConfigReader
+  alias TimeApp.ServiceConfig, as: Config
 
   @impl true
   def start(_type, _args) do
-    case Application.fetch_env(:time_app, :url1) do
-      {:ok, url} -> IO.puts("URL: #{url}")
-      :error -> IO.puts("Error: URL doesn't exist")
-    end
 
-
-
-    children = [
-      # Starts a worker by calling: TimeApp.Worker.start_link(arg)
-      # {TimeApp.Worker, arg}
-    ]
-
-    # See https://hexdocs.pm/elixir/Supervisor.html
-    # for other strategies and supported options
+    children = create_children()
     opts = [strategy: :one_for_one, name: TimeApp.Supervisor]
+
     Supervisor.start_link(children, opts)
+  end
+
+  defp create_children() do
+    config = ConfigReader.get_service_config_list()
+    Enum.map(config, &create_child_spec/1)
+  end
+
+  defp create_child_spec(%Config{name: name} = arg) do
+    Supervisor.child_spec({TimeApp.PingServer, arg}, id: name)
   end
 end

@@ -22,7 +22,8 @@ defmodule TimeApp.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:req, "~> 0.5.6"}
+      {:req, "~> 0.5.6"},
+      {:bypass, "~> 2.1"}
     ]
   end
 end

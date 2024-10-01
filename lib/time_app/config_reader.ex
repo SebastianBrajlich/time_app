@@ -2,7 +2,7 @@ defmodule TimeApp.ConfigReader do
   alias TimeApp.ServiceConfig, as: ServiceConfig
 
   def get_service_config_list() do
-    config = Application.get_env(:time_app, :services)
+    config = Application.get_env(:time_app, :services) || []
     Enum.map(config, &create_service_config/1)
   end
 

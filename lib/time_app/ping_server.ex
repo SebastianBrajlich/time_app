@@ -1,5 +1,6 @@
 defmodule TimeApp.PingServer do
   use GenServer
+  require Logger
   alias TimeApp.ServiceConfig, as: Config
 
   def start_link(config) do
@@ -22,48 +23,48 @@ defmodule TimeApp.PingServer do
     {:noreply, config}
   end
 
-  defp schedule_ping(frequency \\ 2000) do
+  defp schedule_ping(frequency) do
     Process.send_after(self(), :ping, frequency)
   end
 
-  defp send_ping_request(protocol, address, port) do
+  defp send_ping_request(:http, address, _port) do
+    send_http(address)
+  end
 
-    case protocol do
-       :http -> send_http(address)
-       :tcp -> send_tcp(address, port)
-       _ ->
-        IO.puts("Wrong protocol!")
-        exit(1)
-    end
-
+  defp send_ping_request(:tcp, address, port) do
+    send_tcp(address, port)
   end
 
   defp send_http(url) do
-    Req.get(url)
+    Req.get(url, [retry: false])
     |> decode_http_response(url)
   end
 
-  defp decode_http_response({:ok, response}, url) do
-    IO.puts("Response from #{url} -> status: #{response.status}")
+  defp decode_http_response({:ok, %Req.Response{status: 200} = response}, url) do
+    Logger.info("Response from #{url} -> *** status: #{response.status}")
   end
 
-  defp decode_http_response({:error, response}, url) do
-    IO.puts("Response from #{url} -> status: #{response.msg}")
+  defp decode_http_response({:ok, %Req.Response{status: 500} = response}, url) do
+    Logger.info("Response from #{url} -> *** status: #{response.status}")
+  end
+
+  defp decode_http_response({:error, _response}, url) do
+    Logger.info("Response from #{url} -> status: server error")
   end
 
   defp send_tcp(host, port) do
-    host = if is_binary(host), do: to_char_list(host)
+    host = if is_binary(host), do: to_charlist(host)
     :gen_tcp.connect(host, port, [:binary, active: false], 5000)
     |> decode_tcp_response(host)
   end
 
   defp decode_tcp_response({:ok, socket}, host) do
     :gen_tcp.close(socket)
-    IO.puts("Response from #{host} -> status: active")
+    Logger.info("Response from #{host} -> status: active")
   end
 
-  defp decode_tcp_response({:error, reason}, host) do
-    IO.puts("Response from #{host} -> status: #{reason}")
+  defp decode_tcp_response({:error, _reason}, host) do
+    Logger.info("Response from #{host} -> status: not active")
   end
 
 end
